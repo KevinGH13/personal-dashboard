@@ -4,14 +4,16 @@
 var https = require('https');
 var http  = require('http');
 
-function fetchJSON(url) {
+function fetchJSON(url, redirects) {
+  redirects = redirects || 0;
+  if (redirects > 5) return Promise.reject(new Error('Demasiadas redirecciones'));
+
   return new Promise(function(resolve, reject) {
     var mod = url.startsWith('https') ? https : http;
     mod.get(url, { headers: { 'Accept': 'application/json' } }, function(res) {
-      // Seguir redirecciones manualmente (Google redirige al login si no hay sesión)
       if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
-        reject(new Error('Redireccionado a: ' + res.headers.location + ' — el script requiere autenticación o no está publicado para "Cualquier persona"'));
         res.resume();
+        fetchJSON(res.headers.location, redirects + 1).then(resolve).catch(reject);
         return;
       }
       var chunks = [];

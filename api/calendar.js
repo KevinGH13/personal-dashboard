@@ -7,14 +7,21 @@ var http  = require('http');
 function fetchJSON(url) {
   return new Promise(function(resolve, reject) {
     var mod = url.startsWith('https') ? https : http;
-    mod.get(url, function(res) {
+    mod.get(url, { headers: { 'Accept': 'application/json' } }, function(res) {
+      // Seguir redirecciones manualmente (Google redirige al login si no hay sesión)
+      if (res.statusCode >= 300 && res.statusCode < 400 && res.headers.location) {
+        reject(new Error('Redireccionado a: ' + res.headers.location + ' — el script requiere autenticación o no está publicado para "Cualquier persona"'));
+        res.resume();
+        return;
+      }
       var chunks = [];
       res.on('data', function(c) { chunks.push(c); });
       res.on('end', function() {
+        var raw = Buffer.concat(chunks).toString('utf8');
         try {
-          resolve(JSON.parse(Buffer.concat(chunks).toString('utf8')));
+          resolve(JSON.parse(raw));
         } catch(e) {
-          reject(new Error('Respuesta no es JSON válido'));
+          reject(new Error('Respuesta no es JSON válido (status ' + res.statusCode + '). Primeros 200 chars: ' + raw.substring(0, 200)));
         }
       });
       res.on('error', reject);

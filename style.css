@@ -1,0 +1,343 @@
+/* ─── Variables ─────────────────────────────────────────────── */
+:root {
+  /* Dark mode (default) */
+  --bg:          #0c0c0e;
+  --bg-right:    #111114;
+  --text:        #f0f0f0;
+  --text-sub:    rgba(240, 240, 240, 0.35);
+  --text-muted:  rgba(240, 240, 240, 0.18);
+  --divider:     rgba(255, 255, 255, 0.07);
+  --toggle-bg:   rgba(255, 255, 255, 0.07);
+  --toggle-hover:rgba(255, 255, 255, 0.12);
+  --pill-bg:     rgba(255, 255, 255, 0.06);
+  --dot:         rgba(255, 255, 255, 0.25);
+}
+
+body.light {
+  --bg:          #f5f5f7;
+  --bg-right:    #ebebed;
+  --text:        #111111;
+  --text-sub:    rgba(0, 0, 0, 0.38);
+  --text-muted:  rgba(0, 0, 0, 0.18);
+  --divider:     rgba(0, 0, 0, 0.07);
+  --toggle-bg:   rgba(0, 0, 0, 0.06);
+  --toggle-hover:rgba(0, 0, 0, 0.10);
+  --pill-bg:     rgba(0, 0, 0, 0.05);
+  --dot:         rgba(0, 0, 0, 0.22);
+}
+
+/* ─── Reset ─────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  -webkit-text-size-adjust: 100%;
+  -webkit-font-smoothing: antialiased;
+}
+
+body {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
+  color: var(--text);
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+}
+
+/* ─── Layout ────────────────────────────────────────────────── */
+.layout {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  width: 100%;
+  height: 100%;
+}
+
+/* Retrato: columnas apiladas */
+.col-clock {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  width: 100%;
+  height: 50%;
+  background: var(--bg);
+  position: relative;
+}
+
+.col-agenda {
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--bg-right);
+  border-top: 1px solid var(--divider);
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  padding: 24px 28px 20px;
+  overflow: hidden;
+}
+
+/* Paisaje: columnas lado a lado */
+@media (orientation: landscape) {
+  .layout {
+    -webkit-box-orient: horizontal;
+    -webkit-box-direction: normal;
+    -ms-flex-direction: row;
+    flex-direction: row;
+  }
+
+  .col-clock {
+    width: 50%;
+    height: 100%;
+  }
+
+  .col-agenda {
+    position: static;
+    width: 50%;
+    height: 100%;
+    border-top: none;
+    border-left: 1px solid var(--divider);
+    padding: 36px 32px 28px;
+  }
+}
+
+/* ─── Reloj ─────────────────────────────────────────────────── */
+.clock-block {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 10px;
+}
+
+.time {
+  font-weight: 100;
+  font-size: 22vw;
+  line-height: 1;
+  letter-spacing: -0.03em;
+  color: var(--text);
+  -webkit-font-feature-settings: "tnum";
+  font-feature-settings: "tnum";
+  /* fallback tabular numbers */
+  font-variant-numeric: tabular-nums;
+}
+
+.date-block {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  gap: 10px;
+  font-weight: 300;
+  font-size: 3.5vw;
+  color: var(--text-sub);
+  letter-spacing: 0.01em;
+}
+
+.date-block .weekday {
+  text-transform: lowercase;
+}
+
+.date-block .date::before {
+  content: '';
+  display: inline-block;
+  width: 3px;
+  height: 3px;
+  border-radius: 50%;
+  background: var(--dot);
+  margin-right: 10px;
+  vertical-align: middle;
+}
+
+/* En paisaje el reloj ocupa la mitad → ajustar tamaño */
+@media (orientation: landscape) {
+  .time {
+    font-size: 14vw;
+  }
+
+  .date-block {
+    font-size: 2vw;
+  }
+}
+
+/* Portrait pequeño (≤480px) */
+@media (orientation: portrait) and (max-width: 480px) {
+  .time { font-size: 26vw; }
+  .date-block { font-size: 5vw; }
+}
+
+/* ─── Agenda ────────────────────────────────────────────────── */
+.agenda-header {
+  font-weight: 300;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: lowercase;
+  color: var(--text-muted);
+  margin-bottom: 16px;
+  -ms-flex-negative: 0;
+  flex-shrink: 0;
+}
+
+.agenda-list {
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+/* Scrollbar invisible */
+.agenda-list::-webkit-scrollbar { width: 0; }
+
+/* ─── Grupo de día ──────────────────────────────────────────── */
+.day-group {
+  margin-bottom: 20px;
+}
+
+.day-label {
+  font-size: 10px;
+  font-weight: 400;
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--divider);
+}
+
+/* ─── Evento ────────────────────────────────────────────────── */
+.event-row {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: baseline;
+  -ms-flex-align: baseline;
+  align-items: baseline;
+  gap: 12px;
+  padding: 6px 0;
+}
+
+.event-time {
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--text-sub);
+  -ms-flex-negative: 0;
+  flex-shrink: 0;
+  width: 40px;
+  letter-spacing: 0.02em;
+  -webkit-font-feature-settings: "tnum";
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+}
+
+.event-allday {
+  font-size: 10px;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  -ms-flex-negative: 0;
+  flex-shrink: 0;
+  width: 40px;
+}
+
+.event-title {
+  font-size: 14px;
+  font-weight: 300;
+  color: var(--text);
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  -webkit-box-flex: 1;
+  -ms-flex: 1;
+  flex: 1;
+}
+
+.event-cal {
+  font-size: 9px;
+  color: var(--text-muted);
+  letter-spacing: 0.06em;
+  -ms-flex-negative: 0;
+  flex-shrink: 0;
+  text-overflow: ellipsis;
+  overflow: hidden;
+  max-width: 70px;
+  white-space: nowrap;
+}
+
+/* Mensaje de estado */
+.agenda-loading,
+.agenda-empty,
+.agenda-error,
+.agenda-unconfigured {
+  font-size: 13px;
+  font-weight: 300;
+  color: var(--text-muted);
+  padding: 12px 0;
+  letter-spacing: 0.02em;
+}
+
+/* ─── Toggle modo ───────────────────────────────────────────── */
+.mode-toggle {
+  position: fixed;
+  bottom: 18px;
+  right: 18px;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--toggle-bg);
+  border: none;
+  cursor: pointer;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-transition: background 0.2s;
+  transition: background 0.2s;
+  z-index: 100;
+}
+
+.mode-toggle:active {
+  background: var(--toggle-hover);
+}
+
+.mode-icon {
+  width: 16px;
+  height: 16px;
+  color: var(--text-sub);
+}
+
+.hidden {
+  display: none;
+}

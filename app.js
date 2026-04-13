@@ -90,7 +90,7 @@ function renderAgenda(data) {
   }
 
   if (data.unconfigured) {
-    container.innerHTML = '<div class="agenda-unconfigured">configura CAL_ICS_1 en Vercel para ver eventos</div>';
+    container.innerHTML = '<div class="agenda-unconfigured">configura CAL_APPS_SCRIPT_URL en Vercel para ver eventos</div>';
     return;
   }
 

@@ -111,7 +111,7 @@ module.exports = async function handler(req, res) {
   res.setHeader('Content-Type', 'application/json');
 
   var sources = [
-    { url: process.env.CAL_ICS_1 || '', name: process.env.CAL_NAME_1 || '' },
+    { url: process.env.CAL_APPS_SCRIPT_URL || '', name: process.env.CAL_NAME_1 || '' },
     { url: process.env.CAL_ICS_2 || '', name: process.env.CAL_NAME_2 || '' }
   ];
 

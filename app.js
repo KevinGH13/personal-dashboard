@@ -31,24 +31,26 @@ function toggleMode() {
 
 /* ─── Reloj ─────────────────────────────────────────────────── */
 
-var WEEKDAYS = ['domingo', 'lunes', 'martes', 'miércoles', 'jueves', 'viernes', 'sábado'];
-var MONTHS   = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio',
-                'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+var WEEKDAYS = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+var MONTHS   = ['Enero', 'Febrero', 'Marzo', 'Abril', 'Mayo', 'Junio',
+                'Julio', 'Agosto', 'Septiembre', 'Octubre', 'Noviembre', 'Diciembre'];
 
 function pad2(n) {
   return n < 10 ? '0' + n : String(n);
 }
 
 function updateClock() {
-  var now = new Date();
-  var h   = pad2(now.getHours());
-  var m   = pad2(now.getMinutes());
+  var now  = new Date();
+  var hrs  = now.getHours();
+  var m    = pad2(now.getMinutes());
+  var ampm = hrs >= 12 ? 'PM' : 'AM';
+  var h    = hrs % 12 || 12;
 
   var timeEl    = document.getElementById('time');
   var weekdayEl = document.getElementById('weekday');
   var dateEl    = document.getElementById('date');
 
-  if (timeEl)    timeEl.textContent    = h + ':' + m;
+  if (timeEl)    timeEl.textContent    = h + ':' + m + ' ' + ampm;
   if (weekdayEl) weekdayEl.textContent = WEEKDAYS[now.getDay()];
   if (dateEl)    dateEl.textContent    = now.getDate() + ' de ' + MONTHS[now.getMonth()];
 }
@@ -58,9 +60,9 @@ updateClock();
 
 /* ─── Agenda ────────────────────────────────────────────────── */
 
-var DAY_LABELS_SHORT = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
-var MONTHS_SHORT     = ['ene', 'feb', 'mar', 'abr', 'may', 'jun',
-                        'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+var DAY_LABELS_SHORT = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+var MONTHS_SHORT     = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
+                        'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 
 function isSameDay(a, b) {
   return a.getFullYear() === b.getFullYear() &&
@@ -72,8 +74,8 @@ function dayGroupLabel(date) {
   var today    = new Date();
   var tomorrow = new Date(today.getFullYear(), today.getMonth(), today.getDate() + 1);
 
-  if (isSameDay(date, today))    return 'hoy';
-  if (isSameDay(date, tomorrow)) return 'mañana';
+  if (isSameDay(date, today))    return 'Hoy';
+  if (isSameDay(date, tomorrow)) return 'Mañana';
 
   return DAY_LABELS_SHORT[date.getDay()] + ' ' +
          date.getDate() + ' ' +
@@ -85,17 +87,13 @@ function renderAgenda(data) {
   if (!container) return;
 
   if (!data || !data.events) {
-    container.innerHTML = '<div class="agenda-error">error al cargar</div>';
+    container.innerHTML = '<div class="agenda-error">Error al cargar</div>';
     return;
   }
 
-  if (data.unconfigured) {
-    container.innerHTML = '<div class="agenda-unconfigured">configura CAL_APPS_SCRIPT_URL en Vercel para ver eventos</div>';
-    return;
-  }
 
   if (data.events.length === 0) {
-    container.innerHTML = '<div class="agenda-empty">sin eventos próximos</div>';
+    container.innerHTML = '<div class="agenda-empty">Sin eventos próximos</div>';
     return;
   }
 
@@ -148,12 +146,34 @@ function loadAgenda() {
     .then(function(data) { renderAgenda(data); })
     .catch(function() {
       var container = document.getElementById('agenda');
-      if (container) container.innerHTML = '<div class="agenda-error">error al cargar</div>';
+      if (container) container.innerHTML = '<div class="agenda-error">Error al cargar</div>';
     });
 }
 
 loadAgenda();
-setInterval(loadAgenda, 15 * 60 * 1000);
+
+// Refresca cada 2 horas, solo entre las 7am y 5pm
+function scheduleAgendaRefresh() {
+  var now = new Date();
+  var h   = now.getHours();
+  var delay;
+
+  if (h >= 7 && h < 17) {
+    delay = 2 * 60 * 60 * 1000; // 2 horas
+  } else {
+    // Espera hasta las 7am del día siguiente (o de hoy si aún no son las 7)
+    var next7am = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 7, 0, 0, 0);
+    if (now >= next7am) next7am.setDate(next7am.getDate() + 1);
+    delay = next7am.getTime() - now.getTime();
+  }
+
+  setTimeout(function() {
+    loadAgenda();
+    scheduleAgendaRefresh();
+  }, delay);
+}
+
+scheduleAgendaRefresh();
 
 /* ─── Utilidades ────────────────────────────────────────────── */
 

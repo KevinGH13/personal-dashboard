@@ -1,29 +1,34 @@
 /* ─── Variables ─────────────────────────────────────────────── */
 :root {
-  /* Dark mode (default) */
-  --bg:          #0c0c0e;
-  --bg-right:    #111114;
-  --text:        #f0f0f0;
-  --text-sub:    rgba(240, 240, 240, 0.35);
-  --text-muted:  rgba(240, 240, 240, 0.18);
-  --divider:     rgba(255, 255, 255, 0.07);
-  --toggle-bg:   rgba(255, 255, 255, 0.07);
-  --toggle-hover:rgba(255, 255, 255, 0.12);
-  --pill-bg:     rgba(255, 255, 255, 0.06);
-  --dot:         rgba(255, 255, 255, 0.25);
+  --accent:       #00DF81;
+  --accent-dim:   rgba(0, 223, 129, 0.18);
+  --accent-muted: rgba(0, 223, 129, 0.40);
+  --bg:           #0f0f0f;
+  --text:         #e8e8e8;
+  --text-sub:     rgba(232, 232, 232, 0.42);
+  --text-muted:   rgba(232, 232, 232, 0.22);
+  --divider:      rgba(0, 223, 129, 0.10);
+  --card-bg:      #161616;
+  --card-border:  rgba(0, 223, 129, 0.10);
+  --toggle-bg:    rgba(255, 255, 255, 0.07);
+  --toggle-hover: rgba(255, 255, 255, 0.12);
+  --dot:          var(--accent-muted);
 }
 
 body.light {
-  --bg:          #f5f5f7;
-  --bg-right:    #ebebed;
-  --text:        #111111;
-  --text-sub:    rgba(0, 0, 0, 0.38);
-  --text-muted:  rgba(0, 0, 0, 0.18);
-  --divider:     rgba(0, 0, 0, 0.07);
-  --toggle-bg:   rgba(0, 0, 0, 0.06);
-  --toggle-hover:rgba(0, 0, 0, 0.10);
-  --pill-bg:     rgba(0, 0, 0, 0.05);
-  --dot:         rgba(0, 0, 0, 0.22);
+  --accent:       #00925a;
+  --accent-dim:   rgba(0, 146, 90, 0.10);
+  --accent-muted: rgba(0, 146, 90, 0.45);
+  --bg:           #f0f4f2;
+  --text:         #0d1a12;
+  --text-sub:     rgba(13, 26, 18, 0.45);
+  --text-muted:   rgba(13, 26, 18, 0.28);
+  --divider:      rgba(0, 146, 90, 0.14);
+  --card-bg:      rgba(255, 255, 255, 0.88);
+  --card-border:  rgba(0, 146, 90, 0.12);
+  --toggle-bg:    rgba(0, 0, 0, 0.07);
+  --toggle-hover: rgba(0, 0, 0, 0.12);
+  --dot:          var(--accent-muted);
 }
 
 /* ─── Reset ─────────────────────────────────────────────────── */
@@ -46,123 +51,73 @@ body {
   font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', sans-serif;
   color: var(--text);
   -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
   user-select: none;
 }
 
-/* ─── Layout ────────────────────────────────────────────────── */
+/* ─── Layout: siempre dos filas ─────────────────────────────── */
 .layout {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
+  flex-direction: column;
   width: 100%;
   height: 100%;
-}
-
-/* Retrato: columnas apiladas */
-.col-clock {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  width: 100%;
-  height: 50%;
+  padding: 16px;
+  gap: 12px;
   background: var(--bg);
-  position: relative;
 }
 
+/* ─── Card base ─────────────────────────────────────────────── */
+.col-clock,
 .col-agenda {
-  position: absolute;
-  top: 50%;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: var(--bg-right);
-  border-top: 1px solid var(--divider);
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  padding: 24px 28px 20px;
-  overflow: hidden;
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
+  border-radius: 24px;
 }
 
-/* Paisaje: columnas lado a lado */
-@media (orientation: landscape) {
-  .layout {
-    -webkit-box-orient: horizontal;
-    -webkit-box-direction: normal;
-    -ms-flex-direction: row;
-    flex-direction: row;
-  }
+/* ─── Card reloj ────────────────────────────────────────────── */
+.col-clock {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 28px 24px;
+}
 
-  .col-clock {
-    width: 50%;
-    height: 100%;
-  }
-
-  .col-agenda {
-    position: static;
-    width: 50%;
-    height: 100%;
-    border-top: none;
-    border-left: 1px solid var(--divider);
-    padding: 36px 32px 28px;
-  }
+/* ─── Card agenda ───────────────────────────────────────────── */
+.col-agenda {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 24px 16px;
+  overflow: hidden;
 }
 
 /* ─── Reloj ─────────────────────────────────────────────────── */
 .clock-block {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-  -ms-flex-direction: column;
   flex-direction: column;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
   align-items: center;
   gap: 10px;
 }
 
 .time {
-  font-weight: 100;
-  font-size: 22vw;
+  font-family: 'Nunito', 'Inter', sans-serif;
+  font-weight: 800;
+  font-size: 20vw;
   line-height: 1;
-  letter-spacing: -0.03em;
-  color: var(--text);
-  -webkit-font-feature-settings: "tnum";
-  font-feature-settings: "tnum";
-  /* fallback tabular numbers */
+  letter-spacing: -0.02em;
+  color: var(--accent);
   font-variant-numeric: tabular-nums;
 }
 
 .date-block {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
   align-items: center;
   gap: 10px;
   font-weight: 300;
-  font-size: 3.5vw;
+  font-size: 3.8vw;
   color: var(--text-sub);
   letter-spacing: 0.01em;
-}
-
-.date-block .weekday {
-  text-transform: lowercase;
 }
 
 .date-block .date::before {
@@ -176,49 +131,41 @@ body {
   vertical-align: middle;
 }
 
-/* En paisaje el reloj ocupa la mitad → ajustar tamaño */
+/* Landscape: ajuste de tamaños (sigue en filas) */
 @media (orientation: landscape) {
-  .time {
-    font-size: 14vw;
-  }
-
-  .date-block {
-    font-size: 2vw;
-  }
+  .time       { font-size: 14vh; }
+  .date-block { font-size: 2.2vh; }
 }
 
-/* Portrait pequeño (≤480px) */
+/* Portrait pequeño */
 @media (orientation: portrait) and (max-width: 480px) {
-  .time { font-size: 26vw; }
+  .time       { font-size: 24vw; }
   .date-block { font-size: 5vw; }
 }
 
 /* ─── Agenda ────────────────────────────────────────────────── */
 .agenda-header {
   font-weight: 300;
-  font-size: 11px;
-  letter-spacing: 0.12em;
-  text-transform: lowercase;
-  color: var(--text-muted);
-  margin-bottom: 16px;
-  -ms-flex-negative: 0;
+  font-size: 10px;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--accent-muted);
+  margin-bottom: 14px;
   flex-shrink: 0;
 }
 
 .agenda-list {
-  -webkit-box-flex: 1;
-  -ms-flex: 1;
   flex: 1;
+  min-height: 0;
   overflow-y: auto;
   overflow-x: hidden;
 }
 
-/* Scrollbar invisible */
 .agenda-list::-webkit-scrollbar { width: 0; }
 
 /* ─── Grupo de día ──────────────────────────────────────────── */
 .day-group {
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .day-label {
@@ -226,7 +173,7 @@ body {
   font-weight: 400;
   letter-spacing: 0.10em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: var(--accent-muted);
   margin-bottom: 8px;
   padding-bottom: 6px;
   border-bottom: 1px solid var(--divider);
@@ -234,26 +181,19 @@ body {
 
 /* ─── Evento ────────────────────────────────────────────────── */
 .event-row {
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-align: baseline;
-  -ms-flex-align: baseline;
   align-items: baseline;
-  gap: 12px;
-  padding: 6px 0;
+  gap: 10px;
+  padding: 5px 0;
 }
 
 .event-time {
-  font-size: 12px;
+  font-size: 11px;
   font-weight: 300;
   color: var(--text-sub);
-  -ms-flex-negative: 0;
   flex-shrink: 0;
-  width: 40px;
-  letter-spacing: 0.02em;
-  -webkit-font-feature-settings: "tnum";
-  font-feature-settings: "tnum";
+  width: 62px;
+  letter-spacing: 0.01em;
   font-variant-numeric: tabular-nums;
 }
 
@@ -261,21 +201,18 @@ body {
   font-size: 10px;
   letter-spacing: 0.04em;
   color: var(--text-muted);
-  -ms-flex-negative: 0;
   flex-shrink: 0;
-  width: 40px;
+  width: 62px;
 }
 
 .event-title {
-  font-size: 14px;
+  font-size: 13px;
   font-weight: 300;
   color: var(--text);
   line-height: 1.3;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  -webkit-box-flex: 1;
-  -ms-flex: 1;
   flex: 1;
 }
 
@@ -283,15 +220,13 @@ body {
   font-size: 9px;
   color: var(--text-muted);
   letter-spacing: 0.06em;
-  -ms-flex-negative: 0;
   flex-shrink: 0;
   text-overflow: ellipsis;
   overflow: hidden;
-  max-width: 70px;
+  max-width: 65px;
   white-space: nowrap;
 }
 
-/* Mensaje de estado */
 .agenda-loading,
 .agenda-empty,
 .agenda-error,
@@ -299,31 +234,24 @@ body {
   font-size: 13px;
   font-weight: 300;
   color: var(--text-muted);
-  padding: 12px 0;
+  padding: 10px 0;
   letter-spacing: 0.02em;
 }
 
 /* ─── Toggle modo ───────────────────────────────────────────── */
 .mode-toggle {
   position: fixed;
-  bottom: 18px;
-  right: 18px;
-  width: 36px;
-  height: 36px;
+  bottom: 26px;
+  right: 26px;
+  width: 34px;
+  height: 34px;
   border-radius: 50%;
   background: var(--toggle-bg);
   border: none;
   cursor: pointer;
-  display: -webkit-box;
-  display: -ms-flexbox;
   display: flex;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
   align-items: center;
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
   justify-content: center;
-  -webkit-transition: background 0.2s;
   transition: background 0.2s;
   z-index: 100;
 }
@@ -333,8 +261,8 @@ body {
 }
 
 .mode-icon {
-  width: 16px;
-  height: 16px;
+  width: 15px;
+  height: 15px;
   color: var(--text-sub);
 }
 

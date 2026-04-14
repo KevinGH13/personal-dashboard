@@ -33,19 +33,37 @@ function fetchJSON(url, redirects) {
 
 // ─── Helpers de fecha ─────────────────────────────────────────
 
+var TZ = 'America/Bogota';
+
+function toLocalTime(dateStr, timeStr) {
+  var d = new Date(dateStr + 'T' + timeStr + ':00Z');
+  var parts = new Intl.DateTimeFormat('en-CA', {
+    timeZone: TZ,
+    year: 'numeric', month: '2-digit', day: '2-digit',
+    hour: '2-digit', minute: '2-digit', hour12: true
+  }).formatToParts(d);
+  var p = {};
+  parts.forEach(function(x) { p[x.type] = x.value; });
+  // p.hour ya viene sin cero inicial en formato 12h; p.dayPeriod = 'AM'/'PM'
+  return {
+    date: p.year + '-' + p.month + '-' + p.day,
+    time: p.hour + ':' + p.minute + ' ' + (p.dayPeriod || '').toUpperCase()
+  };
+}
+
 function pad2(n) { return n < 10 ? '0' + n : '' + n; }
 
 function todayKey(d) {
   return d.getFullYear() + '-' + pad2(d.getMonth() + 1) + '-' + pad2(d.getDate());
 }
 
-var DAYS_SHORT = ['dom', 'lun', 'mar', 'mié', 'jue', 'vie', 'sáb'];
-var MONTHS_SHORT = ['ene', 'feb', 'mar', 'abr', 'may', 'jun',
-                    'jul', 'ago', 'sep', 'oct', 'nov', 'dic'];
+var DAYS_SHORT = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+var MONTHS_SHORT = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun',
+                    'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
 
 function dayLabel(dateStr, todayStr, tomorrowStr) {
-  if (dateStr === todayStr)    return 'hoy';
-  if (dateStr === tomorrowStr) return 'mañana';
+  if (dateStr === todayStr)    return 'Hoy';
+  if (dateStr === tomorrowStr) return 'Mañana';
   // dateStr = "YYYY-MM-DD" — parseamos en local para evitar desfase UTC
   var parts = dateStr.split('-');
   var d = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
@@ -76,13 +94,21 @@ module.exports = async function handler(req, res) {
     }
 
     var mapped = data.events.map(function(ev) {
-      // Construir timestamp para ordenar
+      var localDate = ev.date || '';
+      var localTime = ev.start || '';
+
+      if (!ev.allDay && ev.date && ev.start) {
+        var converted = toLocalTime(ev.date, ev.start);
+        localDate = converted.date;
+        localTime = converted.time;
+      }
+
       var ts = 0;
-      if (ev.date) {
-        var parts = ev.date.split('-');
+      if (localDate) {
+        var parts = localDate.split('-');
         var base  = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
-        if (ev.start && !ev.allDay) {
-          var timeParts = ev.start.split(':');
+        if (localTime && !ev.allDay) {
+          var timeParts = localTime.split(':');
           base.setHours(parseInt(timeParts[0], 10), parseInt(timeParts[1], 10));
         }
         ts = base.getTime();
@@ -90,9 +116,9 @@ module.exports = async function handler(req, res) {
 
       return {
         timestamp: ts,
-        dayKey:    ev.date || '',
-        dayLabel:  dayLabel(ev.date || '', todayStr, tomorrowStr),
-        time:      ev.allDay ? '' : (ev.start || ''),
+        dayKey:    localDate,
+        dayLabel:  dayLabel(localDate, todayStr, tomorrowStr),
+        time:      ev.allDay ? '' : localTime,
         allDay:    !!ev.allDay,
         title:     ev.title || '(sin título)',
         calendar:  ev.calendar || ''

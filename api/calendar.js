@@ -109,7 +109,14 @@ module.exports = async function handler(req, res) {
         var base  = new Date(parseInt(parts[0], 10), parseInt(parts[1], 10) - 1, parseInt(parts[2], 10));
         if (localTime && !ev.allDay) {
           var timeParts = localTime.split(':');
-          base.setHours(parseInt(timeParts[0], 10), parseInt(timeParts[1], 10));
+          var rawHour   = parseInt(timeParts[0], 10);
+          var rawMin    = parseInt(timeParts[1], 10); // parseInt stops before " PM"
+          var isPM      = /pm/i.test(localTime);
+          var isAM      = /am/i.test(localTime);
+          var hour24    = rawHour;
+          if (isPM && rawHour !== 12) hour24 = rawHour + 12;
+          if (isAM && rawHour === 12) hour24 = 0;
+          base.setHours(hour24, rawMin);
         }
         ts = base.getTime();
       }

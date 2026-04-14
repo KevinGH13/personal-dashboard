@@ -65,7 +65,8 @@ body {
 
 /* ─── Card base ─────────────────────────────────────────────── */
 .col-clock,
-.col-agenda {
+.col-agenda,
+.col-radio {
   background: var(--card-bg);
   border: 1px solid var(--card-border);
   border-radius: 24px;
@@ -80,6 +81,14 @@ body {
   padding: 100px 24px;
 }
 
+/* ─── Fila inferior ─────────────────────────────────────────── */
+.bottom-row {
+  flex: 1;
+  min-height: 0;
+  display: flex;
+  gap: 12px;
+}
+
 /* ─── Card agenda ───────────────────────────────────────────── */
 .col-agenda {
   flex: 1;
@@ -87,6 +96,21 @@ body {
   display: flex;
   flex-direction: column;
   padding: 20px 24px 16px;
+  overflow: hidden;
+}
+
+/* ─── Card radio ────────────────────────────────────────────── */
+.col-radio {
+  flex-shrink: 0;
+  width: 390px;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 20px 16px;
+  align-self: flex-start;
+}
+
+.radio-widget {
+  border-radius: 12px;
   overflow: hidden;
 }
 
@@ -124,7 +148,7 @@ body {
 .date-block {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 0;
   font-weight: 300;
   font-size: 3.8vw;
   color: var(--text-sub);
@@ -138,7 +162,7 @@ body {
   height: 3px;
   border-radius: 50%;
   background: var(--dot);
-  margin-right: 10px;
+  margin: 0 12px;
   vertical-align: middle;
 }
 

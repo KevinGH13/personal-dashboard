@@ -50,7 +50,7 @@ function updateClock() {
   var weekdayEl = document.getElementById('weekday');
   var dateEl    = document.getElementById('date');
 
-  if (timeEl)    timeEl.textContent    = h + ':' + m + ' ' + ampm;
+  if (timeEl)    timeEl.innerHTML = '<span class="time-digits">' + h + ':' + m + '</span><span class="time-ampm">' + ampm + '</span>';
   if (weekdayEl) weekdayEl.textContent = WEEKDAYS[now.getDay()];
   if (dateEl)    dateEl.textContent    = now.getDate() + ' de ' + MONTHS[now.getMonth()];
 }
@@ -128,9 +128,6 @@ function renderAgenda(data) {
         html += '<span class="event-time">' + escapeHtml(e.time) + '</span>';
       }
       html += '<span class="event-title">' + escapeHtml(e.title) + '</span>';
-      if (e.calendar) {
-        html += '<span class="event-cal">' + escapeHtml(e.calendar) + '</span>';
-      }
       html += '</div>';
     }
 

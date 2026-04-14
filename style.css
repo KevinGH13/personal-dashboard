@@ -109,9 +109,75 @@ body {
   align-self: flex-start;
 }
 
-.radio-widget {
-  border-radius: 12px;
+.radio-player {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 0 4px;
+}
+
+.radio-info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+
+.radio-station {
+  font-size: 17px;
+  font-weight: 400;
+  color: var(--text);
+  white-space: nowrap;
   overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.radio-freq {
+  font-size: 12px;
+  font-weight: 300;
+  color: var(--text-sub);
+  letter-spacing: 0.04em;
+}
+
+.radio-btn {
+  flex-shrink: 0;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  background: var(--accent-muted);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  color: var(--accent);
+}
+
+.radio-btn:active {
+  background: var(--accent);
+  color: var(--bg);
+}
+
+.radio-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.radio-status {
+  font-size: 10px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-muted);
+  padding-top: 6px;
+  border-top: 1px solid var(--divider);
+  margin-top: 10px;
+  transition: color 0.3s;
+}
+
+.radio-status.playing {
+  color: var(--accent);
 }
 
 /* ─── Reloj ─────────────────────────────────────────────────── */

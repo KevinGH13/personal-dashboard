@@ -38,16 +38,28 @@
 
       <div class="col-radio">
         <div class="agenda-header">Radio</div>
-        <div class="radio-widget">
-          <iframe
-            src="https://player.raddios.com/widget/widgetreproradio.php?radio=88&autoplay=0&lang=es&link=-radio-online-caracol-radio-am-1100-bogota-colombia"
-            width="100%" height="150"
-            style="border:none; padding:0; display:block;"
-            allowtransparency="true"
-            scrolling="no"
-            title="Caracol Radio AM 1100 Bogotá"
-          ></iframe>
+
+        <div class="radio-player">
+          <div class="radio-info">
+            <div class="radio-station">Caracol Radio</div>
+            <div class="radio-freq">AM 1100 &middot; Bogotá</div>
+          </div>
+          <button class="radio-btn" id="radio-btn" onclick="toggleRadio()" aria-label="Reproducir / Pausar">
+            <!-- Play icon (default) -->
+            <svg id="radio-icon-play" class="radio-icon" viewBox="0 0 24 24" fill="currentColor">
+              <polygon points="6,4 20,12 6,20"/>
+            </svg>
+            <!-- Pause icon (hidden while paused) -->
+            <svg id="radio-icon-pause" class="radio-icon hidden" viewBox="0 0 24 24" fill="currentColor">
+              <rect x="5" y="4" width="4" height="16" rx="1"/>
+              <rect x="15" y="4" width="4" height="16" rx="1"/>
+            </svg>
+          </button>
         </div>
+
+        <div class="radio-status" id="radio-status">En vivo</div>
+
+        <audio id="radio-audio" preload="none"></audio>
       </div>
 
     </div>

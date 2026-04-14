@@ -172,6 +172,40 @@ function scheduleAgendaRefresh() {
 
 scheduleAgendaRefresh();
 
+/* ─── Radio ─────────────────────────────────────────────────── */
+
+var RADIO_STREAM = 'https://playerservices.streamtheworld.com/api/livestream-redirect/CARACOL_RADIO_SC';
+
+function toggleRadio() {
+  var audio      = document.getElementById('radio-audio');
+  var btnPlay    = document.getElementById('radio-icon-play');
+  var btnPause   = document.getElementById('radio-icon-pause');
+  var statusEl   = document.getElementById('radio-status');
+
+  if (audio.paused) {
+    // Assign src fresh each time to force a new live segment (avoids stale buffer)
+    if (!audio.src || audio.src === window.location.href) {
+      audio.src = RADIO_STREAM;
+    }
+    audio.play().catch(function() {
+      if (statusEl) { statusEl.textContent = 'Error al conectar'; statusEl.classList.remove('playing'); }
+    });
+    if (btnPlay)  btnPlay.classList.add('hidden');
+    if (btnPause) btnPause.classList.remove('hidden');
+    if (statusEl) { statusEl.textContent = 'Cargando\u2026'; statusEl.classList.remove('playing'); }
+
+    audio.oncanplay = function() {
+      if (statusEl) { statusEl.textContent = 'En vivo'; statusEl.classList.add('playing'); }
+    };
+  } else {
+    audio.pause();
+    audio.src = '';   // stop buffering completely
+    if (btnPlay)  btnPlay.classList.remove('hidden');
+    if (btnPause) btnPause.classList.add('hidden');
+    if (statusEl) { statusEl.textContent = 'En vivo'; statusEl.classList.remove('playing'); }
+  }
+}
+
 /* ─── Utilidades ────────────────────────────────────────────── */
 
 function escapeHtml(str) {

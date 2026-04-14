@@ -111,8 +111,8 @@ module.exports = async function handler(req, res) {
           var timeParts = localTime.split(':');
           var rawHour   = parseInt(timeParts[0], 10);
           var rawMin    = parseInt(timeParts[1], 10); // parseInt stops before " PM"
-          var isPM      = /pm/i.test(localTime);
-          var isAM      = /am/i.test(localTime);
+          var isPM      = /p\.?m/i.test(localTime);
+          var isAM      = /a\.?m/i.test(localTime);
           var hour24    = rawHour;
           if (isPM && rawHour !== 12) hour24 = rawHour + 12;
           if (isAM && rawHour === 12) hour24 = 0;
